@@ -1,0 +1,13 @@
+# Deps y build
+node_modules/
+dist/
+
+# Evidencia QA local (screenshots Playwright)
+verify-*.png
+
+# Config local de impeccable (la compartida .impeccable/config.json SÍ se versiona)
+.impeccable/config.local.json
+
+# SO / editores
+.DS_Store
+Thumbs.db

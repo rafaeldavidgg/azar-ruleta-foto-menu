@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#E4572E" />
+  <meta name="description" content="Ruleta aleatoria efímera: haz foto a la carta en español y decide al azar. 100% local, sin cuentas." />
+  <title>Azar — Ruleta foto-menú</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <div>
+        <strong>Azar</strong>
+        <span>ruleta foto-menú</span>
+      </div>
+    </div>
+    <p class="badge">efímera · local · sin cuentas</p>
+  </header>
+
+  <main class="wrap">
+    <section id="seccion-ruleta" class="card" aria-label="Ruleta">
+      <div class="wheel-box">
+        <canvas id="wheel" width="640" height="640" role="img" aria-label="Ruleta con opciones"></canvas>
+        <div class="pointer" aria-hidden="true"></div>
+      </div>
+      <p id="result" class="result" aria-live="polite">Añade al menos 2 opciones para girar</p>
+      <button id="btn-spin" class="btn primary big" disabled>Girar la ruleta</button>
+      <p class="hint">Toca Girar. Sin animación si tu sistema pide movimiento reducido.</p>
+    </section>
+
+    <section id="seccion-opciones" class="card" aria-label="Opciones manuales">
+      <h2>Opciones <span id="count">(0)</span></h2>
+      <form id="form-add" class="row">
+        <input id="input-option" name="opcion" type="text" maxlength="80" placeholder="Ej. Paella valenciana" autocomplete="off" />
+        <button class="btn dark" type="submit">Añadir</button>
+      </form>
+      <details class="paste">
+        <summary>Pegar lista de una vez</summary>
+        <textarea id="paste-area" rows="4" placeholder="Una opción por línea:&#10;Paella&#10;Cocido&#10;Flamenquín"></textarea>
+        <button id="btn-paste" class="btn ghost" type="button">Añadir líneas</button>
+      </details>
+      <ul id="options-list" class="olist"></ul>
+      <button id="btn-clear" class="btn ghost danger" type="button">Vaciar todo</button>
+    </section>
+
+    <section id="seccion-foto" class="card" aria-label="Foto de carta">
+      <h2>Foto de la carta</h2>
+      <p class="hint">Carta <strong>impresa en español</strong>. La lectura pasa solo en tu móvil, nada se sube.</p>
+      <div class="row">
+        <label class="btn dark file">
+          Hacer foto
+          <input id="input-camera" type="file" accept="image/*" capture="environment" hidden />
+        </label>
+        <label class="btn ghost file">
+          Elegir galería
+          <input id="input-gallery" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+        </label>
+      </div>
+      <img id="preview" class="preview" alt="Vista previa de la carta" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" hidden />
+      <div id="ocr-progress" class="progress" hidden>
+        <div id="ocr-bar"></div>
+        <p id="ocr-label">Leyendo carta…</p>
+      </div>
+      <p id="ocr-error" class="error" hidden></p>
+      <div id="review" hidden>
+        <h3>Revisa antes de jugar</h3>
+        <div class="row between">
+          <button id="btn-all" class="btn ghost small" type="button">Seleccionar todas</button>
+          <p id="review-count" class="hint">0 seleccionadas</p>
+        </div>
+        <ul id="review-list" class="olist"></ul>
+        <button id="btn-to-wheel" class="btn primary" type="button">Añadir a la ruleta</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottombar" aria-label="Navegación principal">
+    <a href="#seccion-foto" class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="2"/></svg>
+      Foto
+    </a>
+    <button id="btn-spin-bar" class="tab cta" type="button" disabled>Girar</button>
+    <a href="#seccion-opciones" class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      Opciones
+    </a>
+  </nav>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
