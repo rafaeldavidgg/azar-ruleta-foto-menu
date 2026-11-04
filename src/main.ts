@@ -6,6 +6,7 @@ import { ocrCanvas, fileToImage } from './ocr'
 
 let options: string[] = loadOptions()
 let review: { text: string; checked: boolean }[] = []
+let currentRotation = 0
 
 const wheel = document.getElementById('wheel') as HTMLCanvasElement
 const result = document.getElementById('result') as HTMLParagraphElement
@@ -35,7 +36,7 @@ const btnToWheel = document.getElementById('btn-to-wheel') as HTMLButtonElement
 function render(): void {
   saveOptions(options)
   count.textContent = `(${options.length})`
-  drawWheel(wheel, options)
+  drawWheel(wheel, options, currentRotation)
   const ok = options.length >= 2
   btnSpin.disabled = !ok
   btnSpinBar.disabled = !ok
@@ -56,6 +57,7 @@ function render(): void {
       if (!v) options.splice(i, 1)
       else options[i] = v.slice(0, 80)
       result.classList.remove('winner')
+      currentRotation = 0
       render()
     })
     const del = document.createElement('button')
@@ -66,6 +68,7 @@ function render(): void {
     del.addEventListener('click', () => {
       options.splice(i, 1)
       result.classList.remove('winner')
+      currentRotation = 0
       render()
     })
     li.append(input, del)
@@ -79,11 +82,12 @@ function doSpin(): void {
   btnSpinBar.disabled = true
   result.classList.remove('winner')
   result.textContent = 'Girando…'
-  spinWheel(wheel, options, (winner) => {
+  spinWheel(wheel, options, (winner, finalRotation) => {
+    currentRotation = finalRotation
     result.textContent = `Ha tocado: ${winner}`
     result.classList.add('winner')
     render()
-  })
+  }, currentRotation)
 }
 
 btnSpin.addEventListener('click', doSpin)
@@ -99,6 +103,7 @@ formAdd.addEventListener('submit', (e) => {
   options.push(v)
   inputOption.value = ''
   result.classList.remove('winner')
+  currentRotation = 0
   render()
 })
 
@@ -107,12 +112,14 @@ btnPaste.addEventListener('click', () => {
   options = [...options, ...parts].slice(0, 100)
   pasteArea.value = ''
   result.classList.remove('winner')
+  currentRotation = 0
   render()
 })
 
 btnClear.addEventListener('click', () => {
   options = []
   result.classList.remove('winner')
+  currentRotation = 0
   render()
 })
 
@@ -157,6 +164,7 @@ btnToWheel.addEventListener('click', () => {
   review = []
   renderReview()
   result.classList.remove('winner')
+  currentRotation = 0
   render()
   document.getElementById('seccion-ruleta')?.scrollIntoView({ behavior: 'smooth' })
 })

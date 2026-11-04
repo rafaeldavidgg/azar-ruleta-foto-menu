@@ -45,8 +45,11 @@ export function drawWheel(canvas: HTMLCanvasElement, options: string[], rotation
 export function spinWheel(
   canvas: HTMLCanvasElement,
   options: string[],
-  onDone: (winner: string) => void
+  onDone: (winner: string, finalRotation: number) => void,
+  startRotation = 0
 ): void {
+  const TAU = Math.PI * 2
+  const norm = (a: number): number => ((a % TAU) + TAU) % TAU
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const { secureIndex } = { secureIndex: (len: number) => {
     const b = new Uint32Array(1)
@@ -54,26 +57,27 @@ export function spinWheel(
     return b[0] % len
   } }
   const winner = secureIndex(options.length)
-  if (reduced || options.length < 2) {
-    drawWheel(canvas, options, 0)
-    onDone(options[winner] ?? '')
-    return
-  }
   const n = options.length
-  const arc = (Math.PI * 2) / n
+  const arc = TAU / Math.max(n, 1)
   // Queremos que el ganador quede bajo el puntero (arriba = -PI/2).
   const targetAngle = -Math.PI / 2 - (winner * arc + arc / 2)
+  if (reduced || options.length < 2) {
+    const final = norm(targetAngle)
+    drawWheel(canvas, options, final)
+    onDone(options[winner] ?? '', final)
+    return
+  }
   const turns = 5 + (secureIndex(3) + 1)
   const start = performance.now()
   const duration = 3200
-  const from = 0
-  const total = turns * Math.PI * 2 + (((targetAngle - from) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
+  const from = norm(startRotation)
+  const total = turns * TAU + norm(targetAngle - from)
   function frame(now: number): void {
     const t = Math.min((now - start) / duration, 1)
     const eased = 1 - Math.pow(1 - t, 3)
     drawWheel(canvas, options, from + total * eased)
     if (t < 1) requestAnimationFrame(frame)
-    else onDone(options[winner] ?? '')
+    else onDone(options[winner] ?? '', norm(from + total))
   }
   requestAnimationFrame(frame)
 }
