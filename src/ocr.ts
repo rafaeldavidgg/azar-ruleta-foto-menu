@@ -12,6 +12,16 @@ function getWorker(onProgress: (p: number) => void): Promise<any> {
           }
         }
       })
+      // Carta impresa: bloque uniforme de texto. PSM 6 rinde mejor que el 3 por defecto.
+      try {
+        await (worker as any).setParameters({
+          tessedit_pageseg_mode: '6' as any,
+          preserve_interword_spaces: '1' as any,
+          user_defined_dpi: '300' as any,
+        })
+      } catch {
+        // Si la versión de tesseract no acepta parámetros, seguimos con el defecto.
+      }
       return worker
     })()
   }
